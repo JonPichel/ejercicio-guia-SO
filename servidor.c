@@ -51,59 +51,63 @@ int main(int argc, char *argv[])
 		sock_conn = accept(sock_listen, NULL, NULL);
 		printf("He recibido conexion\n");
 		
-		// Ahora recibimos su nombre, que dejamos en el buffer
-		nbytes = read(sock_conn, peticion, sizeof(peticion));
-		peticion[nbytes] = '\0';
-		printf("Recibido\n");
 		
-		//Escribimos el nombre en la consola
-		printf("Se ha conectado: %s\n", peticion);
-		
-        // Procesamos la peticion
-        char *p, nombre[20];
-        int codigo;
-		p = strtok(peticion, "/");
-		codigo = atoi(p);
-		if ((p = strtok(NULL, "/")) == NULL) {
-            printf("Error en la peticion: nombre vacio\n");
-            strcpy(nombre, "");
-        } else {
-            strcpy(nombre, p);
-        }
-		printf("Codigo: %d, Nombre: %s\n", codigo, nombre);
-		
-        // Generamos la respuesta
-        switch (codigo) {
-            case 1:
-                // Servicio de longitud de nombre
-                sprintf(respuesta, "%d", strlen(nombre));
-                break;
-            case 2:
-                // Servicio de valoracion de nombre
-                if (nombre[0] == 'M' || nombre[0] == 'S') {
-                    strcpy(respuesta, "SI");
-                } else {
-                    strcpy(respuesta, "NO");
-                }
-                break;
-            case 3:
-                // Servicio de valoracion de altura
-                p = strtok(NULL, "/");
-                float altura = atof(p);
-                if (altura > 1.70)
-                    sprintf(respuesta, "%s: eres alto", nombre);
-                else
-                    sprintf(respuesta, "%s: eres bajo", nombre);
-                break;
-            default:
-                printf("Codigo desconocido: %d\n", codigo);
-                close(sock_conn);
-                return -1;
-        }
+        while (1) {
+            // Ahora recibimos su nombre, que dejamos en el buffer
+            nbytes = read(sock_conn, peticion, sizeof(peticion));
+            peticion[nbytes] = '\0';
+            printf("Peticion: %s\n", peticion);
 
-        // Enviamos la respuesta
-        printf("Respuesta: %s\n", respuesta);
-        write(sock_conn, respuesta, strlen(respuesta));
+            // Procesamos la peticion
+            char *p, nombre[20];
+            int codigo;
+            p = strtok(peticion, "/");
+            codigo = atoi(p);
+            if ((p = strtok(NULL, "/")) == NULL) {
+                printf("Error en la peticion: nombre vacio\n");
+                strcpy(nombre, "");
+            } else {
+                strcpy(nombre, p);
+            }
+            printf("Codigo: %d, Nombre: %s\n", codigo, nombre);
+            
+            if (codigo == 0) {
+                break;
+            }
+
+            // Generamos la respuesta
+            switch (codigo) {
+                case 1:
+                    // Servicio de longitud de nombre
+                    sprintf(respuesta, "%d", strlen(nombre));
+                    break;
+                case 2:
+                    // Servicio de valoracion de nombre
+                    if (nombre[0] == 'M' || nombre[0] == 'S') {
+                        strcpy(respuesta, "SI");
+                    } else {
+                        strcpy(respuesta, "NO");
+                    }
+                    break;
+                case 3:
+                    // Servicio de valoracion de altura
+                    p = strtok(NULL, "/");
+                    float altura = atof(p);
+                    if (altura > 1.70)
+                        sprintf(respuesta, "%s: eres alto", nombre);
+                    else
+                        sprintf(respuesta, "%s: eres bajo", nombre);
+                    break;
+                default:
+                    printf("Codigo desconocido: %d\n", codigo);
+                    close(sock_conn);
+                    return -1;
+            }
+
+            // Enviamos la respuesta
+            printf("Respuesta: %s\n", respuesta);
+            write(sock_conn, respuesta, strlen(respuesta));
+        }
         
         // Cerramos el socket file descriptor
         close(sock_conn); 
