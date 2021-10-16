@@ -19,92 +19,86 @@ namespace WindowsFormsApplication1
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void btnConn_Click(object sender, EventArgs e)
         {
-
-           
-        }
-
-   
-        private void button2_Click(object sender, EventArgs e)
-        {
-
-            //Creamos un IPEndPoint con el ip del servidor y puerto del servidor 
-            //al que deseamos conectarnos
-            IPAddress direc = IPAddress.Parse("192.168.56.102");
-            IPEndPoint ipep = new IPEndPoint(direc, 9070);
-
-
-            //Creamos el socket 
-            server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            try
+            if (btnConn.Text == "Conectarse")
             {
-                server.Connect(ipep);//Intentamos conectar el socket
-                this.BackColor = Color.Green;
-             
+                IPAddress serv_addr = IPAddress.Parse("10.0.2.2");
+                IPEndPoint ipep = new IPEndPoint(serv_addr, 4444);
 
-                if (Longitud.Checked)
+                server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                try
                 {
-                    // Quiere saber la longitud
-                    string mensaje = "1/" + nombre.Text;
-                    // Enviamos al servidor el nombre tecleado
-                    byte[] msg = System.Text.Encoding.ASCII.GetBytes(mensaje);
-                    server.Send(msg);
-
-                    //Recibimos la respuesta del servidor
-                    byte[] msg2 = new byte[80];
-                    server.Receive(msg2);
-                    mensaje = Encoding.ASCII.GetString(msg2).Split('\0')[0];
-                    MessageBox.Show("La longitud de tu nombre es: " + mensaje);
+                    server.Connect(ipep);
+                    this.BackColor = Color.Green;
+                    MessageBox.Show("Conectado");
                 }
-                else
+                catch (SocketException exc)
                 {
-                    // Quiere saber si el nombre es bonito
-                    string mensaje = "2/" + nombre.Text;
-                    // Enviamos al servidor el nombre tecleado
-                    byte[] msg = System.Text.Encoding.ASCII.GetBytes(mensaje);
-                    server.Send(msg);
-
-                    //Recibimos la respuesta del servidor
-                    byte[] msg2 = new byte[80];
-                    server.Receive(msg2);
-                    mensaje = Encoding.ASCII.GetString(msg2).Split('\0')[0];
-
-
-                    if (mensaje == "SI")
-                        MessageBox.Show("Tu nombre ES bonito.");
-                    else
-                        MessageBox.Show("Tu nombre NO bonito. Lo siento.");
-
-
+                    MessageBox.Show("No he podido conectar con el servidor");
+                    return;
                 }
-             
-                // Se terminó el servicio. 
-                // Nos desconectamos
+                btnConn.Text = "Desconectarse";
+            }
+            else
+            {
+                string msg = "0/";
+                byte[] msg_b = System.Text.Encoding.ASCII.GetBytes(msg);
+                server.Send(msg_b);
+
                 this.BackColor = Color.Gray;
                 server.Shutdown(SocketShutdown.Both);
                 server.Close();
-
-
-
+                btnConn.Text = "Conectarse";
             }
-            catch (SocketException )
-            {
-                //Si hay excepcion imprimimos error y salimos del programa con return 
-                MessageBox.Show("No he podido conectar con el servidor");
-                return;
-            } 
-
-          
-
-    
-          
-          
-
         }
 
-   
+        private void btnEnviar_Click(object sender, EventArgs e)
+        {
+            if (rbnLongitud.Checked)
+            {
+                // Quiere saber la longitud
+                string mensaje = "1/" + txtNombre.Text;
+                // Enviamos al servidor el nombre tecleado
+                byte[] msg = System.Text.Encoding.ASCII.GetBytes(mensaje);
+                server.Send(msg);
 
-     
+                //Recibimos la respuesta del servidor
+                byte[] msg2 = new byte[80];
+                server.Receive(msg2);
+                mensaje = Encoding.ASCII.GetString(msg2).Split('\0')[0];
+                MessageBox.Show("La longitud de tu nombre es: " + mensaje);
+            }
+            else if (rbnBonito.Checked)
+            {
+                // Quiere saber si el nombre es bonito
+                string mensaje = "2/" + txtNombre.Text;
+                // Enviamos al servidor el nombre tecleado
+                byte[] msg = System.Text.Encoding.ASCII.GetBytes(mensaje);
+                server.Send(msg);
+
+                //Recibimos la respuesta del servidor
+                byte[] msg2 = new byte[80];
+                server.Receive(msg2);
+                mensaje = Encoding.ASCII.GetString(msg2).Split('\0')[0];
+
+
+                if (mensaje == "SI")
+                    MessageBox.Show("Tu nombre ES bonito.");
+                else
+                    MessageBox.Show("Tu nombre NO bonito. Lo siento.");
+            }
+            else
+            {
+                string mensaje = "3/" + txtNombre.Text + "/" + txtAltura.Text;
+                byte[] msg = System.Text.Encoding.ASCII.GetBytes(mensaje);
+                server.Send(msg);
+
+                byte[] msg2 = new byte[80];
+                server.Receive(msg2);
+                mensaje = Encoding.ASCII.GetString(msg2).Split('\0')[0];
+                MessageBox.Show(mensaje);
+            }
+        }
     }
 }

@@ -29,11 +29,15 @@
         private void InitializeComponent()
         {
             this.label2 = new System.Windows.Forms.Label();
-            this.nombre = new System.Windows.Forms.TextBox();
-            this.button2 = new System.Windows.Forms.Button();
+            this.txtNombre = new System.Windows.Forms.TextBox();
+            this.btnEnviar = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.Longitud = new System.Windows.Forms.RadioButton();
-            this.Bonito = new System.Windows.Forms.RadioButton();
+            this.rbnAltura = new System.Windows.Forms.RadioButton();
+            this.rbnLongitud = new System.Windows.Forms.RadioButton();
+            this.rbnBonito = new System.Windows.Forms.RadioButton();
+            this.btnConn = new System.Windows.Forms.Button();
+            this.txtAltura = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -47,31 +51,34 @@
             this.label2.TabIndex = 1;
             this.label2.Text = "Nombre";
             // 
-            // nombre
+            // txtNombre
             // 
-            this.nombre.Location = new System.Drawing.Point(116, 31);
-            this.nombre.Name = "nombre";
-            this.nombre.Size = new System.Drawing.Size(164, 20);
-            this.nombre.TabIndex = 3;
+            this.txtNombre.Location = new System.Drawing.Point(116, 31);
+            this.txtNombre.Name = "txtNombre";
+            this.txtNombre.Size = new System.Drawing.Size(164, 20);
+            this.txtNombre.TabIndex = 3;
             // 
-            // button2
+            // btnEnviar
             // 
-            this.button2.Location = new System.Drawing.Point(130, 144);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 5;
-            this.button2.Text = "Enviar";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.btnEnviar.Location = new System.Drawing.Point(130, 144);
+            this.btnEnviar.Name = "btnEnviar";
+            this.btnEnviar.Size = new System.Drawing.Size(75, 23);
+            this.btnEnviar.TabIndex = 5;
+            this.btnEnviar.Text = "Enviar";
+            this.btnEnviar.UseVisualStyleBackColor = true;
+            this.btnEnviar.Click += new System.EventHandler(this.btnEnviar_Click);
             // 
             // groupBox1
             // 
             this.groupBox1.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.groupBox1.Controls.Add(this.Longitud);
-            this.groupBox1.Controls.Add(this.Bonito);
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.txtAltura);
+            this.groupBox1.Controls.Add(this.rbnAltura);
+            this.groupBox1.Controls.Add(this.rbnLongitud);
+            this.groupBox1.Controls.Add(this.rbnBonito);
             this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.button2);
-            this.groupBox1.Controls.Add(this.nombre);
+            this.groupBox1.Controls.Add(this.btnEnviar);
+            this.groupBox1.Controls.Add(this.txtNombre);
             this.groupBox1.Location = new System.Drawing.Point(12, 114);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(363, 282);
@@ -79,37 +86,74 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Peticion";
             // 
-            // Longitud
+            // rbnAltura
             // 
-            this.Longitud.AutoSize = true;
-            this.Longitud.Location = new System.Drawing.Point(116, 91);
-            this.Longitud.Name = "Longitud";
-            this.Longitud.Size = new System.Drawing.Size(166, 17);
-            this.Longitud.TabIndex = 7;
-            this.Longitud.TabStop = true;
-            this.Longitud.Text = "Dime la longitud de mi nombre";
-            this.Longitud.UseVisualStyleBackColor = true;
+            this.rbnAltura.AutoSize = true;
+            this.rbnAltura.Location = new System.Drawing.Point(116, 114);
+            this.rbnAltura.Name = "rbnAltura";
+            this.rbnAltura.Size = new System.Drawing.Size(98, 17);
+            this.rbnAltura.TabIndex = 9;
+            this.rbnAltura.TabStop = true;
+            this.rbnAltura.Text = "Dime si soy alto";
+            this.rbnAltura.UseVisualStyleBackColor = true;
             // 
-            // Bonito
+            // rbnLongitud
             // 
-            this.Bonito.AutoSize = true;
-            this.Bonito.Location = new System.Drawing.Point(116, 68);
-            this.Bonito.Name = "Bonito";
-            this.Bonito.Size = new System.Drawing.Size(156, 17);
-            this.Bonito.TabIndex = 8;
-            this.Bonito.TabStop = true;
-            this.Bonito.Text = "Dime si mi nombre es bonito";
-            this.Bonito.UseVisualStyleBackColor = true;
+            this.rbnLongitud.AutoSize = true;
+            this.rbnLongitud.Location = new System.Drawing.Point(116, 91);
+            this.rbnLongitud.Name = "rbnLongitud";
+            this.rbnLongitud.Size = new System.Drawing.Size(166, 17);
+            this.rbnLongitud.TabIndex = 7;
+            this.rbnLongitud.TabStop = true;
+            this.rbnLongitud.Text = "Dime la longitud de mi nombre";
+            this.rbnLongitud.UseVisualStyleBackColor = true;
+            // 
+            // rbnBonito
+            // 
+            this.rbnBonito.AutoSize = true;
+            this.rbnBonito.Location = new System.Drawing.Point(116, 68);
+            this.rbnBonito.Name = "rbnBonito";
+            this.rbnBonito.Size = new System.Drawing.Size(156, 17);
+            this.rbnBonito.TabIndex = 8;
+            this.rbnBonito.TabStop = true;
+            this.rbnBonito.Text = "Dime si mi nombre es bonito";
+            this.rbnBonito.UseVisualStyleBackColor = true;
+            // 
+            // btnConn
+            // 
+            this.btnConn.Location = new System.Drawing.Point(12, 85);
+            this.btnConn.Name = "btnConn";
+            this.btnConn.Size = new System.Drawing.Size(110, 23);
+            this.btnConn.TabIndex = 7;
+            this.btnConn.Text = "Conectarse";
+            this.btnConn.UseVisualStyleBackColor = true;
+            this.btnConn.Click += new System.EventHandler(this.btnConn_Click);
+            // 
+            // txtAltura
+            // 
+            this.txtAltura.Location = new System.Drawing.Point(6, 111);
+            this.txtAltura.Name = "txtAltura";
+            this.txtAltura.Size = new System.Drawing.Size(66, 20);
+            this.txtAltura.TabIndex = 10;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 95);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(34, 13);
+            this.label1.TabIndex = 11;
+            this.label1.Text = "Altura";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(741, 562);
+            this.Controls.Add(this.btnConn);
             this.Controls.Add(this.groupBox1);
             this.Name = "Form1";
             this.Text = "Form1";
-            this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
@@ -119,11 +163,15 @@
         #endregion
 
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox nombre;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.TextBox txtNombre;
+        private System.Windows.Forms.Button btnEnviar;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.RadioButton Longitud;
-        private System.Windows.Forms.RadioButton Bonito;
+        private System.Windows.Forms.RadioButton rbnLongitud;
+        private System.Windows.Forms.RadioButton rbnBonito;
+        private System.Windows.Forms.Button btnConn;
+        private System.Windows.Forms.RadioButton rbnAltura;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox txtAltura;
     }
 }
 
