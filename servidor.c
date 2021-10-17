@@ -1,4 +1,5 @@
 #include <string.h>
+#include <ctype.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -76,6 +77,7 @@ int main(int argc, char *argv[])
             }
 
             // Generamos la respuesta
+            int i, j, palindromo;
             switch (codigo) {
                 case 1:
                     // Servicio de longitud de nombre
@@ -98,6 +100,31 @@ int main(int argc, char *argv[])
                     else
                         sprintf(respuesta, "%s: eres bajo", nombre);
                     break;
+                case 4:
+                    // Servicio de palindromo
+                    i = 0;
+                    j = strlen(nombre) - 1;
+                    while (1) {
+                        if (toupper(nombre[i++]) != toupper(nombre[j--])) {
+                            sprintf(respuesta, "NO");
+                            break;
+                        }
+                        if (i >= j) {
+                            sprintf(respuesta, "SI");
+                            break;
+                        }
+                    }
+                    break;
+                case 5:
+                    // Servicio de nombre en mayusculas
+                    p = nombre;
+                    while (*p != '\0') {
+                        *p = toupper(*p);
+                        p++;
+                    }
+                    strcpy(respuesta, nombre);
+                    break;
+                        
                 default:
                     printf("Codigo desconocido: %d\n", codigo);
                     close(sock_conn);
