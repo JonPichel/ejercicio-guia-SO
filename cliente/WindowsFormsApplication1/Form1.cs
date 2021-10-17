@@ -82,15 +82,43 @@ namespace WindowsFormsApplication1
                 server.Receive(msg2);
                 mensaje = Encoding.ASCII.GetString(msg2).Split('\0')[0];
 
-
                 if (mensaje == "SI")
                     MessageBox.Show("Tu nombre ES bonito.");
                 else
                     MessageBox.Show("Tu nombre NO bonito. Lo siento.");
             }
-            else
+            else if (rbnAltura.Checked)
             {
                 string mensaje = "3/" + txtNombre.Text + "/" + txtAltura.Text;
+                byte[] msg = System.Text.Encoding.ASCII.GetBytes(mensaje);
+                server.Send(msg);
+
+                byte[] msg2 = new byte[80];
+                server.Receive(msg2);
+                mensaje = Encoding.ASCII.GetString(msg2).Split('\0')[0];
+                MessageBox.Show(mensaje);
+            }
+            else if (rbnPalin.Checked)
+            {
+                string mensaje = "4/" + txtNombre.Text;
+                byte[] msg = System.Text.Encoding.ASCII.GetBytes(mensaje);
+                server.Send(msg);
+
+                byte[] msg2 = new byte[80];
+                server.Receive(msg2);
+                mensaje = Encoding.ASCII.GetString(msg2).Split('\0')[0];
+                if (mensaje == "SI")
+                {
+                    MessageBox.Show("Tu nombre ES un palindromo");
+                }
+                else
+                {
+                    MessageBox.Show("Tu nombre NO es un palindromo");
+                }
+            }
+            else
+            {
+                string mensaje = "5/" + txtNombre.Text;
                 byte[] msg = System.Text.Encoding.ASCII.GetBytes(mensaje);
                 server.Send(msg);
 

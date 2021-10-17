@@ -32,12 +32,14 @@
             this.txtNombre = new System.Windows.Forms.TextBox();
             this.btnEnviar = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.txtAltura = new System.Windows.Forms.TextBox();
             this.rbnAltura = new System.Windows.Forms.RadioButton();
             this.rbnLongitud = new System.Windows.Forms.RadioButton();
             this.rbnBonito = new System.Windows.Forms.RadioButton();
             this.btnConn = new System.Windows.Forms.Button();
-            this.txtAltura = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.rbnPalin = new System.Windows.Forms.RadioButton();
+            this.rbnMayus = new System.Windows.Forms.RadioButton();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -60,7 +62,7 @@
             // 
             // btnEnviar
             // 
-            this.btnEnviar.Location = new System.Drawing.Point(130, 144);
+            this.btnEnviar.Location = new System.Drawing.Point(128, 186);
             this.btnEnviar.Name = "btnEnviar";
             this.btnEnviar.Size = new System.Drawing.Size(75, 23);
             this.btnEnviar.TabIndex = 5;
@@ -71,6 +73,8 @@
             // groupBox1
             // 
             this.groupBox1.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.groupBox1.Controls.Add(this.rbnMayus);
+            this.groupBox1.Controls.Add(this.rbnPalin);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.txtAltura);
             this.groupBox1.Controls.Add(this.rbnAltura);
@@ -85,6 +89,22 @@
             this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Peticion";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 95);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(34, 13);
+            this.label1.TabIndex = 11;
+            this.label1.Text = "Altura";
+            // 
+            // txtAltura
+            // 
+            this.txtAltura.Location = new System.Drawing.Point(6, 111);
+            this.txtAltura.Name = "txtAltura";
+            this.txtAltura.Size = new System.Drawing.Size(66, 20);
+            this.txtAltura.TabIndex = 10;
             // 
             // rbnAltura
             // 
@@ -129,21 +149,27 @@
             this.btnConn.UseVisualStyleBackColor = true;
             this.btnConn.Click += new System.EventHandler(this.btnConn_Click);
             // 
-            // txtAltura
+            // rbnPalin
             // 
-            this.txtAltura.Location = new System.Drawing.Point(6, 111);
-            this.txtAltura.Name = "txtAltura";
-            this.txtAltura.Size = new System.Drawing.Size(66, 20);
-            this.txtAltura.TabIndex = 10;
+            this.rbnPalin.AutoSize = true;
+            this.rbnPalin.Location = new System.Drawing.Point(116, 137);
+            this.rbnPalin.Name = "rbnPalin";
+            this.rbnPalin.Size = new System.Drawing.Size(180, 17);
+            this.rbnPalin.TabIndex = 12;
+            this.rbnPalin.TabStop = true;
+            this.rbnPalin.Text = "Dime si mi nombre es palíndromo";
+            this.rbnPalin.UseVisualStyleBackColor = true;
             // 
-            // label1
+            // rbnMayus
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 95);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(34, 13);
-            this.label1.TabIndex = 11;
-            this.label1.Text = "Altura";
+            this.rbnMayus.AutoSize = true;
+            this.rbnMayus.Location = new System.Drawing.Point(116, 160);
+            this.rbnMayus.Name = "rbnMayus";
+            this.rbnMayus.Size = new System.Drawing.Size(173, 17);
+            this.rbnMayus.TabIndex = 13;
+            this.rbnMayus.TabStop = true;
+            this.rbnMayus.Text = "Dime mi nombre en mayúsculas";
+            this.rbnMayus.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -172,6 +198,8 @@
         private System.Windows.Forms.RadioButton rbnAltura;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtAltura;
+        private System.Windows.Forms.RadioButton rbnMayus;
+        private System.Windows.Forms.RadioButton rbnPalin;
     }
 }
 
