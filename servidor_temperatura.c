@@ -64,12 +64,12 @@ int main(int argc, char *argv[])
             int codigo, temp;
             p = strtok(peticion, "/");
             codigo = atoi(p);
-            temp = atoi(strtok(NULL, "/"));
-            printf("Codigo: %d, Temp: %d\n", codigo, temp);
-            
             if (codigo == 0) {
                 break;
             }
+            temp = atoi(strtok(NULL, "/"));
+            printf("Codigo: %d, Temp: %d\n", codigo, temp);
+            
 
             // Generamos la respuesta
             int temp2;
