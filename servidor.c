@@ -6,12 +6,14 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <stdio.h>
+#include <pthread.h>
+
+void *atender_cliente(void *socket);
 
 int main(int argc, char *argv[])
 {
-	int sock_listen, sock_conn, nbytes;
+	int sock_listen, sock_conn;
 	struct sockaddr_in host_addr;
-	char peticion[512], respuesta[512];
     int puerto; 
 
     if (argc > 1) {
@@ -45,98 +47,106 @@ int main(int argc, char *argv[])
         return -1;
     }
 	
-	for(;;) {
+    int sockets[100];
+    pthread_t threads[100];
+	for(int i = 0; i < 5; i++) {
 		printf("Escuchando\n");
 		
         // Los argumentos 2 y 3 se usan si queremos conocer la direccion del cliente
 		sock_conn = accept(sock_listen, NULL, NULL);
 		printf("He recibido conexion\n");
-		
-		
-        while (1) {
-            // Ahora recibimos su nombre, que dejamos en el buffer
-            nbytes = read(sock_conn, peticion, sizeof(peticion));
-            peticion[nbytes] = '\0';
-            printf("Peticion: %s\n", peticion);
 
-            // Procesamos la peticion
-            char *p, nombre[20];
-            int codigo;
-            p = strtok(peticion, "/");
-            codigo = atoi(p);
-            if ((p = strtok(NULL, "/")) == NULL) {
-                printf("Error en la peticion: nombre vacio\n");
-                strcpy(nombre, "");
-            } else {
-                strcpy(nombre, p);
-            }
-            printf("Codigo: %d, Nombre: %s\n", codigo, nombre);
-            
-            if (codigo == 0) {
-                break;
-            }
-
-            // Generamos la respuesta
-            int i, j, palindromo;
-            switch (codigo) {
-                case 1:
-                    // Servicio de longitud de nombre
-                    sprintf(respuesta, "%d", strlen(nombre));
-                    break;
-                case 2:
-                    // Servicio de valoracion de nombre
-                    if (nombre[0] == 'M' || nombre[0] == 'S') {
-                        strcpy(respuesta, "SI");
-                    } else {
-                        strcpy(respuesta, "NO");
-                    }
-                    break;
-                case 3:
-                    // Servicio de valoracion de altura
-                    p = strtok(NULL, "/");
-                    float altura = atof(p);
-                    if (altura > 1.70)
-                        sprintf(respuesta, "%s: eres alto", nombre);
-                    else
-                        sprintf(respuesta, "%s: eres bajo", nombre);
-                    break;
-                case 4:
-                    // Servicio de palindromo
-                    i = 0;
-                    j = strlen(nombre) - 1;
-                    while (1) {
-                        if (toupper(nombre[i++]) != toupper(nombre[j--])) {
-                            sprintf(respuesta, "NO");
-                            break;
-                        }
-                        if (i >= j) {
-                            sprintf(respuesta, "SI");
-                            break;
-                        }
-                    }
-                    break;
-                case 5:
-                    // Servicio de nombre en mayusculas
-                    p = nombre;
-                    while (*p != '\0') {
-                        *p = toupper(*p);
-                        p++;
-                    }
-                    strcpy(respuesta, nombre);
-                    break;
-                        
-                default:
-                    printf("Codigo desconocido: %d\n", codigo);
-                    close(sock_conn);
-                    return -1;
-            }
-
-            // Enviamos la respuesta
-            printf("Respuesta: %s\n", respuesta);
-            write(sock_conn, respuesta, strlen(respuesta));
-        }
-        
-        // Cerramos el socket file descriptor
-        close(sock_conn); 
+        sockets[i] = sock_conn;
+        pthread_create(&threads[i], NULL, atender_cliente, &sock_conn);
 	}
+}
+
+void *atender_cliente(void *socket) {
+	char peticion[512], respuesta[512];
+    int sock_conn = *(int *)socket;
+    char *p, nombre[20];
+    int codigo, nbytes;
+    while (1) {
+        // Ahora recibimos su nombre, que dejamos en el buffer
+        nbytes = read(sock_conn, peticion, sizeof(peticion));
+        peticion[nbytes] = '\0';
+        printf("Peticion: %s\n", peticion);
+
+        // Procesamos la peticion
+        p = strtok(peticion, "/");
+        codigo = atoi(p);
+        if ((p = strtok(NULL, "/")) == NULL) {
+            printf("Error en la peticion: nombre vacio\n");
+            strcpy(nombre, "");
+        } else {
+            strcpy(nombre, p);
+        }
+        printf("Codigo: %d, Nombre: %s\n", codigo, nombre);
+        
+        if (codigo == 0) {
+            break;
+        }
+
+        // Generamos la respuesta
+        int i, j, palindromo;
+        switch (codigo) {
+            case 1:
+                // Servicio de longitud de nombre
+                sprintf(respuesta, "%d", strlen(nombre));
+                break;
+            case 2:
+                // Servicio de valoracion de nombre
+                if (nombre[0] == 'M' || nombre[0] == 'S') {
+                    strcpy(respuesta, "SI");
+                } else {
+                    strcpy(respuesta, "NO");
+                }
+                break;
+            case 3:
+                // Servicio de valoracion de altura
+                p = strtok(NULL, "/");
+                float altura = atof(p);
+                if (altura > 1.70)
+                    sprintf(respuesta, "%s: eres alto", nombre);
+                else
+                    sprintf(respuesta, "%s: eres bajo", nombre);
+                break;
+            case 4:
+                // Servicio de palindromo
+                i = 0;
+                j = strlen(nombre) - 1;
+                while (1) {
+                    if (toupper(nombre[i++]) != toupper(nombre[j--])) {
+                        sprintf(respuesta, "NO");
+                        break;
+                    }
+                    if (i >= j) {
+                        sprintf(respuesta, "SI");
+                        break;
+                    }
+                }
+                break;
+            case 5:
+                // Servicio de nombre en mayusculas
+                p = nombre;
+                while (*p != '\0') {
+                    *p = toupper(*p);
+                    p++;
+                }
+                strcpy(respuesta, nombre);
+                break;
+                    
+            default:
+                printf("Codigo desconocido: %d\n", codigo);
+                close(sock_conn);
+                return NULL;
+        }
+
+        // Enviamos la respuesta
+        printf("Respuesta: %s\n", respuesta);
+        write(sock_conn, respuesta, strlen(respuesta));
+    }
+    
+    // Cerramos el socket file descriptor
+    close(sock_conn); 
 }
