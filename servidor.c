@@ -10,6 +10,9 @@
 
 void *atender_cliente(void *socket);
 
+int contador = 0;
+pthread_mutex_t mutex_contador = PTHREAD_MUTEX_INITIALIZER;
+
 int main(int argc, char *argv[])
 {
 	int sock_listen, sock_conn;
@@ -59,6 +62,9 @@ int main(int argc, char *argv[])
         sockets[i] = sock_conn;
         pthread_create(&threads[i], NULL, atender_cliente, &sock_conn);
 	}
+    for (int i = 0; i < 5; i++) {
+        pthread_join(threads[i], NULL);
+    }
 }
 
 void *atender_cliente(void *socket) {
@@ -76,7 +82,6 @@ void *atender_cliente(void *socket) {
         p = strtok(peticion, "/");
         codigo = atoi(p);
         if ((p = strtok(NULL, "/")) == NULL) {
-            printf("Error en la peticion: nombre vacio\n");
             strcpy(nombre, "");
         } else {
             strcpy(nombre, p);
@@ -85,6 +90,12 @@ void *atender_cliente(void *socket) {
         
         if (codigo == 0) {
             break;
+        }
+
+        if (codigo != 6) {
+            pthread_mutex_lock(&mutex_contador);
+            contador++;
+            pthread_mutex_unlock(&mutex_contador);
         }
 
         // Generamos la respuesta
@@ -135,7 +146,10 @@ void *atender_cliente(void *socket) {
                 }
                 strcpy(respuesta, nombre);
                 break;
-                    
+            case 6:
+                // Servicio de numero de servicios 
+                sprintf(respuesta, "%d", contador);
+                break;
             default:
                 printf("Codigo desconocido: %d\n", codigo);
                 close(sock_conn);
