@@ -13,6 +13,8 @@ void *atender_cliente(void *socket);
 int contador = 0;
 pthread_mutex_t mutex_contador = PTHREAD_MUTEX_INITIALIZER;
 
+int nsockets, sockets[100];
+
 int main(int argc, char *argv[])
 {
 	int sock_listen, sock_conn;
@@ -50,25 +52,25 @@ int main(int argc, char *argv[])
         return -1;
     }
 	
-    int sockets[100];
     pthread_t threads[100];
-	for(int i = 0; i < 5; i++) {
+	for(nsockets = 0; nsockets < 10; i++) {
 		printf("Escuchando\n");
 		
         // Los argumentos 2 y 3 se usan si queremos conocer la direccion del cliente
 		sock_conn = accept(sock_listen, NULL, NULL);
 		printf("He recibido conexion\n");
 
-        sockets[i] = sock_conn;
-        pthread_create(&threads[i], NULL, atender_cliente, &sock_conn);
+        sockets[nsockets] = sock_conn;
+        pthread_create(&threads[nsockets], NULL, atender_cliente, &sock_conn);
 	}
-    for (int i = 0; i < 5; i++) {
-        pthread_join(threads[i], NULL);
+    for (; nsockets > 0; nsockets--) {
+        pthread_join(threads[nsockets], NULL);
     }
 }
 
 void *atender_cliente(void *socket) {
 	char peticion[512], respuesta[512];
+    char notificacion[20];
     int sock_conn = *(int *)socket;
     char *p, nombre[20];
     int codigo, nbytes;
@@ -90,12 +92,6 @@ void *atender_cliente(void *socket) {
         
         if (codigo == 0) {
             break;
-        }
-
-        if (codigo != 6) {
-            pthread_mutex_lock(&mutex_contador);
-            contador++;
-            pthread_mutex_unlock(&mutex_contador);
         }
 
         // Generamos la respuesta
@@ -146,10 +142,6 @@ void *atender_cliente(void *socket) {
                 }
                 strcpy(respuesta, nombre);
                 break;
-            case 6:
-                // Servicio de numero de servicios 
-                sprintf(respuesta, "%d", contador);
-                break;
             default:
                 printf("Codigo desconocido: %d\n", codigo);
                 close(sock_conn);
@@ -159,6 +151,14 @@ void *atender_cliente(void *socket) {
         // Enviamos la respuesta
         printf("Respuesta: %s\n", respuesta);
         write(sock_conn, respuesta, strlen(respuesta));
+
+        pthread_mutex_lock(&mutex_contador);
+        contador++;
+        pthread_mutex_unlock(&mutex_contador);
+        sprintf(notificacion, "%d", contador);
+        for (int j = 0; j < nsockets; j++) {
+            write(sockets[j], notificacion, strlen(notificacion));
+        }
     }
     
     // Cerramos el socket file descriptor
